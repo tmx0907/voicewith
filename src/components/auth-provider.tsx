@@ -9,6 +9,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { setUser, setProfile, setLoading, setInitialized } = useAuthStore()
 
   useEffect(() => {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    // 환경 변수가 없거나 플레이스홀더인 경우 초기화만 하고 종료
+    if (
+      !supabaseUrl ||
+      !supabaseAnonKey ||
+      supabaseUrl.includes('your') ||
+      supabaseAnonKey.includes('your')
+    ) {
+      setLoading(false)
+      setInitialized(true)
+      return
+    }
+
     const supabase = getSupabaseClient()
 
     // 초기 사용자 확인
